@@ -114,7 +114,7 @@ STRUNSAFEAPI
 StringCchCopyW(
     wchar_t *pszDest,
     size_t cchDest,
-    const wchar_t * pszSrc)
+    const wchar_t *pszSrc)
 {
     assert(pszDest);
     assert(pszSrc);
@@ -198,9 +198,9 @@ StringCchCatW(
 STRUNSAFEAPI
 StringCchCatNA(
     char *pszDest,
-    size_t  cchDest,
+    size_t cchDest,
     const char *pszSrc,
-    size_t  cchToAppend)
+    size_t cchToAppend)
 {
     size_t cchOld, cchSrc;
     assert(pszDest);
@@ -226,9 +226,9 @@ StringCchCatNA(
 STRUNSAFEAPI
 StringCchCatNW(
     wchar_t *pszDest,
-    size_t  cchDest,
-    const wchar_t * pszSrc,
-    size_t  cchToAppend)
+    size_t cchDest,
+    const wchar_t *pszSrc,
+    size_t cchToAppend)
 {
     size_t cchOld, cchSrc;
     assert(pszDest);
@@ -254,9 +254,9 @@ StringCchCatNW(
 STRUNSAFEAPI
 StringCchCopyNA(
     char *pszDest,
-    size_t  cchDest,
+    size_t cchDest,
     const char *pszSrc,
-    size_t  cchToCopy)
+    size_t cchToCopy)
 {
     size_t cchSrc;
     assert(pszDest);
@@ -281,9 +281,9 @@ StringCchCopyNA(
 STRUNSAFEAPI
 StringCchCopyNW(
     wchar_t *pszDest,
-    size_t  cchDest,
-    const wchar_t * pszSrc,
-    size_t  cchToCopy)
+    size_t cchDest,
+    const wchar_t *pszSrc,
+    size_t cchToCopy)
 {
     size_t cchSrc;
     assert(pszDest);
@@ -308,7 +308,7 @@ StringCchCopyNW(
 STRUNSAFEAPI
 StringCchVPrintfA(
     char *pszDest,
-    size_t  cchDest,
+    size_t cchDest,
     const char *pszFormat,
     va_list argList)
 {
@@ -323,8 +323,8 @@ StringCchVPrintfA(
 STRUNSAFEAPI
 StringCchVPrintfW(
     wchar_t *pszDest,
-    size_t  cchDest,
-    const wchar_t * pszFormat,
+    size_t cchDest,
+    const wchar_t *pszFormat,
     va_list argList)
 {
     assert(pszDest);
@@ -338,7 +338,7 @@ StringCchVPrintfW(
 STRUNSAFEAPIV
 StringCchPrintfA(
     char *pszDest,
-    size_t  cchDest,
+    size_t cchDest,
     const char *pszFormat, ...)
 {
     int ret;
@@ -359,8 +359,8 @@ StringCchPrintfA(
 STRUNSAFEAPIV
 StringCchPrintfW(
     wchar_t *pszDest,
-    size_t  cchDest,
-    const wchar_t * pszFormat, ...)
+    size_t cchDest,
+    const wchar_t *pszFormat, ...)
 {
     int ret;
     va_list va;
@@ -380,7 +380,7 @@ StringCchPrintfW(
 STRUNSAFEAPI
 StringCchGetsA(
     char *pszDest,
-    size_t  cchDest)
+    size_t cchDest)
 {
     assert(pszDest);
     if (fgets(pszDest, (int)cchDest, stdin) != NULL)
@@ -392,7 +392,7 @@ StringCchGetsA(
 STRUNSAFEAPI
 StringCchGetsW(
     wchar_t *pszDest,
-    size_t  cchDest)
+    size_t cchDest)
 {
     assert(pszDest);
     if (fgetws(pszDest, (int)cchDest, stdin) != NULL)
@@ -404,7 +404,7 @@ StringCchGetsW(
 STRUNSAFEAPI
 StringCchLengthA(
     const char *psz,
-    size_t  cchMax,
+    size_t cchMax,
     size_t *pcchLength)
 {
     assert(psz);
@@ -420,8 +420,8 @@ StringCchLengthA(
 
 STRUNSAFEAPI
 StringCchLengthW(
-    const wchar_t * psz,
-    size_t  cchMax,
+    const wchar_t *psz,
+    size_t cchMax,
     size_t *pcchLength)
 {
     assert(psz);
@@ -438,9 +438,9 @@ StringCchLengthW(
 STRUNSAFEAPI
 StringCbCatNA(
     char *pszDest,
-    size_t  cbDest,
+    size_t cbDest,
     const char *pszSrc,
-    size_t  cbToAppend)
+    size_t cbToAppend)
 {
     return StringCchCatNA(pszDest, cbDest / sizeof(*pszDest), pszSrc,
                           cbToAppend / sizeof(*pszDest));
@@ -449,9 +449,9 @@ StringCbCatNA(
 STRUNSAFEAPI
 StringCbCatNW(
     wchar_t *pszDest,
-    size_t  cbDest,
-    const wchar_t * pszSrc,
-    size_t  cbToAppend)
+    size_t cbDest,
+    const wchar_t *pszSrc,
+    size_t cbToAppend)
 {
     return StringCchCatNW(pszDest, cbDest / sizeof(*pszDest), pszSrc,
                           cbToAppend / sizeof(*pszDest));
@@ -460,7 +460,7 @@ StringCbCatNW(
 STRUNSAFEAPI
 StringCbCopyA(
     char *pszDest,
-    size_t  cbDest,
+    size_t cbDest,
     const char *pszSrc)
 {
     return StringCchCopyA(pszDest, cbDest / sizeof(*pszDest), pszSrc);
@@ -469,8 +469,8 @@ StringCbCopyA(
 STRUNSAFEAPI
 StringCbCopyW(
     wchar_t *pszDest,
-    size_t  cbDest,
-    const wchar_t * pszSrc)
+    size_t cbDest,
+    const wchar_t *pszSrc)
 {
     return StringCchCopyW(pszDest, cbDest / sizeof(*pszDest), pszSrc);
 }
@@ -478,7 +478,7 @@ StringCbCopyW(
 STRUNSAFEAPI
 StringCbCatA(
     char *pszDest,
-    size_t  cbDest,
+    size_t cbDest,
     const char *pszSrc)
 {
     return StringCchCatA(pszDest, cbDest / sizeof(*pszDest), pszSrc);
@@ -487,8 +487,8 @@ StringCbCatA(
 STRUNSAFEAPI
 StringCbCatW(
     wchar_t *pszDest,
-    size_t  cbDest,
-    const wchar_t * pszSrc)
+    size_t cbDest,
+    const wchar_t *pszSrc)
 {
     return StringCchCatW(pszDest, cbDest / sizeof(*pszDest), pszSrc);
 }
@@ -496,9 +496,9 @@ StringCbCatW(
 STRUNSAFEAPI
 StringCbCopyNA(
     char *pszDest,
-    size_t  cbDest,
+    size_t cbDest,
     const char *pszSrc,
-    size_t  cbToCopy)
+    size_t cbToCopy)
 {
     return StringCchCopyNA(pszDest, cbDest / sizeof(*pszDest), pszSrc,
                            cbToCopy / sizeof(*pszDest));
@@ -507,9 +507,9 @@ StringCbCopyNA(
 STRUNSAFEAPI
 StringCbCopyNW(
     wchar_t *pszDest,
-    size_t  cbDest,
-    const wchar_t * pszSrc,
-    size_t  cbToCopy)
+    size_t cbDest,
+    const wchar_t *pszSrc,
+    size_t cbToCopy)
 {
     return StringCchCopyNW(pszDest, cbDest / sizeof(*pszDest), pszSrc,
                            cbToCopy / sizeof(*pszDest));
@@ -518,7 +518,7 @@ StringCbCopyNW(
 STRUNSAFEAPI
 StringCbVPrintfA(
     char *pszDest,
-    size_t  cbDest,
+    size_t cbDest,
     const char *pszFormat,
     va_list argList)
 {
@@ -536,8 +536,8 @@ StringCbVPrintfA(
 STRUNSAFEAPI
 StringCbVPrintfW(
     wchar_t *pszDest,
-    size_t  cbDest,
-    const wchar_t * pszFormat,
+    size_t cbDest,
+    const wchar_t *pszFormat,
     va_list argList)
 {
     assert(pszDest);
@@ -554,7 +554,7 @@ StringCbVPrintfW(
 STRUNSAFEAPIV
 StringCbPrintfA(
     char *pszDest,
-    size_t  cchDest,
+    size_t cchDest,
     const char *pszFormat, ...)
 {
     int ret;
@@ -575,7 +575,7 @@ StringCbPrintfA(
 STRUNSAFEAPIV
 StringCbPrintfW(
     wchar_t *pszDest,
-    size_t  cchDest,
+    size_t cchDest,
     const wchar_t *pszFormat, ...)
 {
     int ret;
@@ -596,7 +596,7 @@ StringCbPrintfW(
 STRUNSAFEAPI
 StringCbGetsA(
     char *pszDest,
-    size_t  cbDest)
+    size_t cbDest)
 {
     return StringCchGetsA(pszDest, cbDest / sizeof(*pszDest));
 }
@@ -604,7 +604,7 @@ StringCbGetsA(
 STRUNSAFEAPI
 StringCbGetsW(
     wchar_t *pszDest,
-    size_t  cbDest)
+    size_t cbDest)
 {
     return StringCchGetsW(pszDest, cbDest / sizeof(*pszDest));
 }
@@ -612,7 +612,7 @@ StringCbGetsW(
 STRUNSAFEAPI
 StringCbLengthA(
     const char *psz,
-    size_t  cbMax,
+    size_t cbMax,
     size_t *pcbLength)
 {
     assert(psz);
@@ -628,8 +628,8 @@ StringCbLengthA(
 
 STRUNSAFEAPI
 StringCbLengthW(
-    const wchar_t * psz,
-    size_t  cbMax,
+    const wchar_t *psz,
+    size_t cbMax,
     size_t *pcbLength)
 {
     assert(psz);
