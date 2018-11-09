@@ -62,13 +62,21 @@ include_directories(..)
 
 # add executable
 add_executable(strsafe_test strsafe_test.c)
+add_executable(strunsafe_test strunsafe_test.c)
 
-# add test
-add_test(NAME StringCchCatA COMMAND $<TARGET_FILE:strsafe_test> StringCchCatA)
-add_test(NAME StringCchCatNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCatNA)
-add_test(NAME StringCchCopyA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyA)
-add_test(NAME StringCchCopyNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyNA)
-add_test(NAME StringCchLengthA COMMAND $<TARGET_FILE:strsafe_test> StringCchLengthA)
-add_test(NAME StringCchPrintfA COMMAND $<TARGET_FILE:strsafe_test> StringCchPrintfA)
+# add tests
+add_test(NAME SafeStringCchCatA COMMAND $<TARGET_FILE:strsafe_test> StringCchCatA)
+add_test(NAME SafeStringCchCatNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCatNA)
+add_test(NAME SafeStringCchCopyA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyA)
+add_test(NAME SafeStringCchCopyNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyNA)
+add_test(NAME SafeStringCchLengthA COMMAND $<TARGET_FILE:strsafe_test> StringCchLengthA)
+add_test(NAME SafeStringCchPrintfA COMMAND $<TARGET_FILE:strsafe_test> StringCchPrintfA)
+
+add_test(NAME UnsafeStringCchCatA COMMAND $<TARGET_FILE:strunsafe_test> StringCchCatA)
+add_test(NAME UnsafeStringCchCatNA COMMAND $<TARGET_FILE:strunsafe_test> StringCchCatNA)
+add_test(NAME UnsafeStringCchCopyA COMMAND $<TARGET_FILE:strunsafe_test> StringCchCopyA)
+add_test(NAME UnsafeStringCchCopyNA COMMAND $<TARGET_FILE:strunsafe_test> StringCchCopyNA)
+add_test(NAME UnsafeStringCchLengthA COMMAND $<TARGET_FILE:strunsafe_test> StringCchLengthA)
+add_test(NAME UnsafeStringCchPrintfA COMMAND $<TARGET_FILE:strunsafe_test> StringCchPrintfA)
 
 ##############################################################################
