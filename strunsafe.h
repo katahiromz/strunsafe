@@ -83,64 +83,22 @@ StringCchCopyA(
     size_t cchDest,
     const char *pszSrc)
 {
+    size_t cchSrc;
     assert(pszDest);
     assert(pszSrc);
 
     if (!cchDest)
         return S_OK;
 
-#if defined(_WIN32) && !defined(WONVER) && !defined(_WONVER)
-    if (lstrcpynA(pszDest, pszSrc, cchDest) != NULL)
+    cchSrc = strlen(pszSrc);
+    if (cchSrc + 1 > cchDest)
+        cchSrc = cchDest - 1;
+    if (!cchSrc)
         return S_OK;
 
-    assert(0);
-    return E_FAIL;
-#else
-    {
-        size_t cchSrc = strlen(pszSrc);
-        if (cchSrc + 1 > cchDest)
-            cchSrc = cchDest - 1;
-        if (!cchSrc)
-            return S_OK;
-
-        memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
-        pszDest[cchSrc] = 0;
-    }
+    memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
+    pszDest[cchSrc] = 0;
     return S_OK;
-#endif
-}
-
-STRUNSAFEAPI
-StringCchCopyW(
-    wchar_t *pszDest,
-    size_t cchDest,
-    const wchar_t *pszSrc)
-{
-    assert(pszDest);
-    assert(pszSrc);
-
-    if (!cchDest)
-        return S_OK;
-
-#if defined(_WIN32) && !defined(WONVER) && !defined(_WONVER)
-    if (lstrcpynW(pszDest, pszSrc, cchDest) != NULL)
-        return S_OK;
-
-    assert(0);
-    return E_FAIL;
-#else
-    {
-        size_t cchSrc = wcslen(pszSrc);
-        if (cchSrc + 1 > cchDest)
-            cchSrc = cchDest - 1;
-        if (!cchSrc)
-            return S_OK;
-
-        memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
-        pszDest[cchSrc] = 0;
-    }
-    return S_OK;
-#endif
 }
 
 STRUNSAFEAPI
@@ -169,33 +127,6 @@ StringCchCatA(
 }
 
 STRUNSAFEAPI
-StringCchCatW(
-    wchar_t *pszDest,
-    size_t cchDest,
-    const wchar_t *pszSrc)
-{
-    size_t cchOld, cchSrc;
-    assert(pszDest);
-    assert(pszSrc);
-
-    if (!cchDest || !*pszSrc)
-        return S_OK;
-
-    cchOld = wcslen(pszDest);
-    cchSrc = wcslen(pszSrc);
-    if (cchOld + cchSrc + 1 > cchDest)
-        cchSrc = cchDest - cchOld - 1;
-    if (!cchSrc)
-        return S_OK;
-
-    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
-    pszDest[cchOld + cchSrc] = 0;
-
-    assert(0);
-    return E_FAIL;
-}
-
-STRUNSAFEAPI
 StringCchCatNA(
     char *pszDest,
     size_t cchDest,
@@ -211,34 +142,6 @@ StringCchCatNA(
 
     cchOld = strlen(pszDest);
     cchSrc = strlen(pszSrc);
-    if (cchSrc > cchToAppend)
-        cchSrc = cchToAppend;
-    if (cchOld + cchSrc + 1 > cchDest)
-        cchSrc = cchDest - cchOld - 1;
-    if (!cchSrc)
-        return S_OK;
-
-    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
-    pszDest[cchOld + cchSrc] = 0;
-    return S_OK;
-}
-
-STRUNSAFEAPI
-StringCchCatNW(
-    wchar_t *pszDest,
-    size_t cchDest,
-    const wchar_t *pszSrc,
-    size_t cchToAppend)
-{
-    size_t cchOld, cchSrc;
-    assert(pszDest);
-    assert(pszSrc);
-
-    if (!cchDest || !*pszSrc)
-        return S_OK;
-
-    cchOld = wcslen(pszDest);
-    cchSrc = wcslen(pszSrc);
     if (cchSrc > cchToAppend)
         cchSrc = cchToAppend;
     if (cchOld + cchSrc + 1 > cchDest)
@@ -279,6 +182,255 @@ StringCchCopyNA(
 }
 
 STRUNSAFEAPI
+StringCchVPrintfA(
+    char *pszDest,
+    size_t cchDest,
+    const char *pszFormat,
+    va_list argList)
+{
+    assert(pszDest);
+    assert(pszFormat);
+    assert(argList);
+    if (vsnprintf(pszDest, cchDest, pszFormat, argList) != -1)
+        return S_OK;
+    return E_FAIL;
+}
+
+STRUNSAFEAPIV
+StringCchPrintfA(
+    char *pszDest,
+    size_t cchDest,
+    const char *pszFormat, ...)
+{
+    int ret;
+    va_list va;
+    assert(pszDest);
+    assert(pszFormat);
+
+    va_start(va, pszFormat);
+    ret = vsnprintf(pszDest, cchDest, pszFormat, va);
+    va_end(va);
+    if (ret != -1)
+        return S_OK;
+
+    assert(0);
+    return E_FAIL;
+}
+
+STRUNSAFEAPI
+StringCchGetsA(
+    char *pszDest,
+    size_t cchDest)
+{
+    assert(pszDest);
+    if (fgets(pszDest, (int)cchDest, stdin) != NULL)
+        return S_OK;
+    assert(0);
+    return E_FAIL;
+}
+
+STRUNSAFEAPI
+StringCchLengthA(
+    const char *psz,
+    size_t cchMax,
+    size_t *pcchLength)
+{
+    assert(psz);
+    assert(pcchLength);
+
+    if (pcchLength == NULL)
+        return E_FAIL;
+
+    *pcchLength = strlen(psz);
+
+    return S_OK;
+}
+
+STRUNSAFEAPI
+StringCbCatNA(
+    char *pszDest,
+    size_t cbDest,
+    const char *pszSrc,
+    size_t cbToAppend)
+{
+    return StringCchCatNA(pszDest, cbDest / sizeof(*pszDest), pszSrc,
+                          cbToAppend / sizeof(*pszDest));
+}
+
+STRUNSAFEAPI
+StringCbCopyA(
+    char *pszDest,
+    size_t cbDest,
+    const char *pszSrc)
+{
+    return StringCchCopyA(pszDest, cbDest / sizeof(*pszDest), pszSrc);
+}
+
+STRUNSAFEAPI
+StringCbCatA(
+    char *pszDest,
+    size_t cbDest,
+    const char *pszSrc)
+{
+    return StringCchCatA(pszDest, cbDest / sizeof(*pszDest), pszSrc);
+}
+
+STRUNSAFEAPI
+StringCbCopyNA(
+    char *pszDest,
+    size_t cbDest,
+    const char *pszSrc,
+    size_t cbToCopy)
+{
+    return StringCchCopyNA(pszDest, cbDest / sizeof(*pszDest), pszSrc,
+                           cbToCopy / sizeof(*pszDest));
+}
+
+STRUNSAFEAPI
+StringCbVPrintfA(
+    char *pszDest,
+    size_t cbDest,
+    const char *pszFormat,
+    va_list argList)
+{
+    assert(pszDest);
+    assert(pszFormat);
+    assert(argList);
+
+    if (vsnprintf(pszDest, cbDest / sizeof(*pszDest), pszFormat, argList) != -1)
+        return S_OK;
+
+    assert(0);
+    return E_FAIL;
+}
+
+STRUNSAFEAPIV
+StringCbPrintfA(
+    char *pszDest,
+    size_t cchDest,
+    const char *pszFormat, ...)
+{
+    int ret;
+    va_list va;
+    assert(pszDest);
+    assert(pszFormat);
+
+    va_start(va, pszFormat);
+    ret = vsnprintf(pszDest, cchDest, pszFormat, va);
+    va_end(va);
+    if (ret != -1)
+        return S_OK;
+
+    assert(0);
+    return E_FAIL;
+}
+
+STRUNSAFEAPI
+StringCbGetsA(
+    char *pszDest,
+    size_t cbDest)
+{
+    return StringCchGetsA(pszDest, cbDest / sizeof(*pszDest));
+}
+
+STRUNSAFEAPI
+StringCbLengthA(
+    const char *psz,
+    size_t cbMax,
+    size_t *pcbLength)
+{
+    assert(psz);
+    assert(pcbLength);
+
+    if (pcbLength == NULL)
+        return E_FAIL;
+
+    *pcbLength = strlen(psz) * sizeof(*psz);
+
+    return S_OK;
+}
+
+#ifdef _WIN32   // Unicode support for Win32 only
+STRUNSAFEAPI
+StringCchCopyW(
+    wchar_t *pszDest,
+    size_t cchDest,
+    const wchar_t *pszSrc)
+{
+    size_t cchSrc;
+    assert(pszDest);
+    assert(pszSrc);
+
+    if (!cchDest)
+        return S_OK;
+
+    cchSrc = wcslen(pszSrc);
+    if (cchSrc + 1 > cchDest)
+        cchSrc = cchDest - 1;
+    if (!cchSrc)
+        return S_OK;
+
+    memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
+    pszDest[cchSrc] = 0;
+    return S_OK;
+}
+
+STRUNSAFEAPI
+StringCchCatW(
+    wchar_t *pszDest,
+    size_t cchDest,
+    const wchar_t *pszSrc)
+{
+    size_t cchOld, cchSrc;
+    assert(pszDest);
+    assert(pszSrc);
+
+    if (!cchDest || !*pszSrc)
+        return S_OK;
+
+    cchOld = wcslen(pszDest);
+    cchSrc = wcslen(pszSrc);
+    if (cchOld + cchSrc + 1 > cchDest)
+        cchSrc = cchDest - cchOld - 1;
+    if (!cchSrc)
+        return S_OK;
+
+    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
+    pszDest[cchOld + cchSrc] = 0;
+
+    assert(0);
+    return E_FAIL;
+}
+
+STRUNSAFEAPI
+StringCchCatNW(
+    wchar_t *pszDest,
+    size_t cchDest,
+    const wchar_t *pszSrc,
+    size_t cchToAppend)
+{
+    size_t cchOld, cchSrc;
+    assert(pszDest);
+    assert(pszSrc);
+
+    if (!cchDest || !*pszSrc)
+        return S_OK;
+
+    cchOld = wcslen(pszDest);
+    cchSrc = wcslen(pszSrc);
+    if (cchSrc > cchToAppend)
+        cchSrc = cchToAppend;
+    if (cchOld + cchSrc + 1 > cchDest)
+        cchSrc = cchDest - cchOld - 1;
+    if (!cchSrc)
+        return S_OK;
+
+    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
+    pszDest[cchOld + cchSrc] = 0;
+    return S_OK;
+}
+
+STRUNSAFEAPI
 StringCchCopyNW(
     wchar_t *pszDest,
     size_t cchDest,
@@ -306,21 +458,6 @@ StringCchCopyNW(
 }
 
 STRUNSAFEAPI
-StringCchVPrintfA(
-    char *pszDest,
-    size_t cchDest,
-    const char *pszFormat,
-    va_list argList)
-{
-    assert(pszDest);
-    assert(pszFormat);
-    assert(argList);
-    if (vsnprintf(pszDest, cchDest, pszFormat, argList) != -1)
-        return S_OK;
-    return E_FAIL;
-}
-
-STRUNSAFEAPI
 StringCchVPrintfW(
     wchar_t *pszDest,
     size_t cchDest,
@@ -332,27 +469,6 @@ StringCchVPrintfW(
     assert(argList);
     if (vsnwprintf(pszDest, cchDest, pszFormat, argList) != -1)
         return S_OK;
-    return E_FAIL;
-}
-
-STRUNSAFEAPIV
-StringCchPrintfA(
-    char *pszDest,
-    size_t cchDest,
-    const char *pszFormat, ...)
-{
-    int ret;
-    va_list va;
-    assert(pszDest);
-    assert(pszFormat);
-
-    va_start(va, pszFormat);
-    ret = vsnprintf(pszDest, cchDest, pszFormat, va);
-    va_end(va);
-    if (ret != -1)
-        return S_OK;
-
-    assert(0);
     return E_FAIL;
 }
 
@@ -378,18 +494,6 @@ StringCchPrintfW(
 }
 
 STRUNSAFEAPI
-StringCchGetsA(
-    char *pszDest,
-    size_t cchDest)
-{
-    assert(pszDest);
-    if (fgets(pszDest, (int)cchDest, stdin) != NULL)
-        return S_OK;
-    assert(0);
-    return E_FAIL;
-}
-
-STRUNSAFEAPI
 StringCchGetsW(
     wchar_t *pszDest,
     size_t cchDest)
@@ -399,23 +503,6 @@ StringCchGetsW(
         return S_OK;
     assert(0);
     return E_FAIL;
-}
-
-STRUNSAFEAPI
-StringCchLengthA(
-    const char *psz,
-    size_t cchMax,
-    size_t *pcchLength)
-{
-    assert(psz);
-    assert(pcchLength);
-
-    if (pcchLength == NULL)
-        return E_FAIL;
-
-    *pcchLength = strlen(psz);
-
-    return S_OK;
 }
 
 STRUNSAFEAPI
@@ -436,17 +523,6 @@ StringCchLengthW(
 }
 
 STRUNSAFEAPI
-StringCbCatNA(
-    char *pszDest,
-    size_t cbDest,
-    const char *pszSrc,
-    size_t cbToAppend)
-{
-    return StringCchCatNA(pszDest, cbDest / sizeof(*pszDest), pszSrc,
-                          cbToAppend / sizeof(*pszDest));
-}
-
-STRUNSAFEAPI
 StringCbCatNW(
     wchar_t *pszDest,
     size_t cbDest,
@@ -455,15 +531,6 @@ StringCbCatNW(
 {
     return StringCchCatNW(pszDest, cbDest / sizeof(*pszDest), pszSrc,
                           cbToAppend / sizeof(*pszDest));
-}
-
-STRUNSAFEAPI
-StringCbCopyA(
-    char *pszDest,
-    size_t cbDest,
-    const char *pszSrc)
-{
-    return StringCchCopyA(pszDest, cbDest / sizeof(*pszDest), pszSrc);
 }
 
 STRUNSAFEAPI
@@ -476,32 +543,12 @@ StringCbCopyW(
 }
 
 STRUNSAFEAPI
-StringCbCatA(
-    char *pszDest,
-    size_t cbDest,
-    const char *pszSrc)
-{
-    return StringCchCatA(pszDest, cbDest / sizeof(*pszDest), pszSrc);
-}
-
-STRUNSAFEAPI
 StringCbCatW(
     wchar_t *pszDest,
     size_t cbDest,
     const wchar_t *pszSrc)
 {
     return StringCchCatW(pszDest, cbDest / sizeof(*pszDest), pszSrc);
-}
-
-STRUNSAFEAPI
-StringCbCopyNA(
-    char *pszDest,
-    size_t cbDest,
-    const char *pszSrc,
-    size_t cbToCopy)
-{
-    return StringCchCopyNA(pszDest, cbDest / sizeof(*pszDest), pszSrc,
-                           cbToCopy / sizeof(*pszDest));
 }
 
 STRUNSAFEAPI
@@ -516,24 +563,6 @@ StringCbCopyNW(
 }
 
 STRUNSAFEAPI
-StringCbVPrintfA(
-    char *pszDest,
-    size_t cbDest,
-    const char *pszFormat,
-    va_list argList)
-{
-    assert(pszDest);
-    assert(pszFormat);
-    assert(argList);
-
-    if (vsnprintf(pszDest, cbDest / sizeof(*pszDest), pszFormat, argList) != -1)
-        return S_OK;
-
-    assert(0);
-    return E_FAIL;
-}
-
-STRUNSAFEAPI
 StringCbVPrintfW(
     wchar_t *pszDest,
     size_t cbDest,
@@ -545,27 +574,6 @@ StringCbVPrintfW(
     assert(argList);
 
     if (vsnwprintf(pszDest, cbDest / sizeof(*pszDest), pszFormat, argList) != -1)
-        return S_OK;
-
-    assert(0);
-    return E_FAIL;
-}
-
-STRUNSAFEAPIV
-StringCbPrintfA(
-    char *pszDest,
-    size_t cchDest,
-    const char *pszFormat, ...)
-{
-    int ret;
-    va_list va;
-    assert(pszDest);
-    assert(pszFormat);
-
-    va_start(va, pszFormat);
-    ret = vsnprintf(pszDest, cchDest, pszFormat, va);
-    va_end(va);
-    if (ret != -1)
         return S_OK;
 
     assert(0);
@@ -594,36 +602,11 @@ StringCbPrintfW(
 }
 
 STRUNSAFEAPI
-StringCbGetsA(
-    char *pszDest,
-    size_t cbDest)
-{
-    return StringCchGetsA(pszDest, cbDest / sizeof(*pszDest));
-}
-
-STRUNSAFEAPI
 StringCbGetsW(
     wchar_t *pszDest,
     size_t cbDest)
 {
     return StringCchGetsW(pszDest, cbDest / sizeof(*pszDest));
-}
-
-STRUNSAFEAPI
-StringCbLengthA(
-    const char *psz,
-    size_t cbMax,
-    size_t *pcbLength)
-{
-    assert(psz);
-    assert(pcbLength);
-
-    if (pcbLength == NULL)
-        return E_FAIL;
-
-    *pcbLength = strlen(psz) * sizeof(*psz);
-
-    return S_OK;
 }
 
 STRUNSAFEAPI
@@ -642,6 +625,7 @@ StringCbLengthW(
 
     return S_OK;
 }
+#endif  /* def _WIN32 */
 
 #ifdef UNICODE
     #define StringCchCat StringCchCatW
