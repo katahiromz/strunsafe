@@ -64,6 +64,11 @@ include_directories(..)
 add_executable(strsafe_test strsafe_test.c)
 
 # add test
-add_test(NAME strsafe_test COMMAND $<TARGET_FILE:strsafe_test> strsafe_test all)
+add_test(NAME StringCchCatA COMMAND $<TARGET_FILE:strsafe_test> StringCchCatA)
+add_test(NAME StringCchCatNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCatNA)
+add_test(NAME StringCchCopyA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyA)
+add_test(NAME StringCchCopyNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyNA)
+add_test(NAME StringCchLengthA COMMAND $<TARGET_FILE:strsafe_test> StringCchLengthA)
+add_test(NAME StringCchPrintfA COMMAND $<TARGET_FILE:strsafe_test> StringCchPrintfA)
 
 ##############################################################################

@@ -1648,10 +1648,10 @@ START_TEST(StringCchLengthA)
 }
 
 BEGIN_TESTS()
-    DEFINE_TEST(StringCchCopyA)
     DEFINE_TEST(StringCchCatA)
     DEFINE_TEST(StringCchCatNA)
+    DEFINE_TEST(StringCchCopyA)
     DEFINE_TEST(StringCchCopyNA)
-    DEFINE_TEST(StringCchPrintfA)
     DEFINE_TEST(StringCchLengthA)
+    DEFINE_TEST(StringCchPrintfA)
 END_TESTS()
