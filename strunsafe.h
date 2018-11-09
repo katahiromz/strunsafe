@@ -57,6 +57,10 @@ C_ASSERT(STRSAFE_MAX_CCH > 1);
 
 #define STRSAFE_MAX_LENGTH  (STRSAFE_MAX_CCH - 1)
 
+#define STRSAFE_E_INSUFFICIENT_BUFFER ((HRESULT)0x8007007A)
+#define STRSAFE_E_INVALID_PARAMETER ((HRESULT)0x80070057)
+#define STRSAFE_E_END_OF_FILE ((HRESULT)0x80070026)
+
 #ifndef UNALIGNED
     #if defined(_M_MRX000) || defined(_M_ALPHA) || defined(_M_PPC) || \
         defined(_M_IA64) || defined(_M_AMD64) || defined(_M_ARM) || \
