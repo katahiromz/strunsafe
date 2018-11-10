@@ -4,7 +4,7 @@
 /* NO WARRANTY ABSOLUTELY. */
 
 #ifndef _STRUNSAFE_H_INCLUDED_
-#define _STRUNSAFE_H_INCLUDED_      2   /* Version 2 */
+#define _STRUNSAFE_H_INCLUDED_      3   /* Version 3 */
 
 #ifdef _STRSAFE_H_INCLUDED_
     #error Please #include "strunsafe.h" before #include <strsafe.h>.
@@ -60,6 +60,7 @@ C_ASSERT(STRSAFE_MAX_CCH <= 2147483647);
 C_ASSERT(STRSAFE_MAX_CCH > 1);
 
 #define STRSAFE_MAX_LENGTH  (STRSAFE_MAX_CCH - 1)
+#define STRUNSAFE_MAX_BUFFER  1024
 
 #define STRSAFE_E_INSUFFICIENT_BUFFER ((HRESULT)0x8007007A)
 #define STRSAFE_E_INVALID_PARAMETER ((HRESULT)0x80070057)
@@ -96,6 +97,7 @@ StringCchCopyA(
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -133,6 +135,7 @@ StringCchCatA(
     assert(pszDest);
     assert(pszSrc);
     assert(pszDest != pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -170,9 +173,10 @@ StringCchCatNA(
     assert(pszDest);
     assert(pszSrc);
     assert(pszDest != pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
+    if (!pszDest || !cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = strlen(pszDest);
@@ -208,6 +212,7 @@ StringCchCopyNA(
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -246,9 +251,10 @@ StringCchVPrintfA(
     assert(pszDest);
     assert(pszFormat);
     assert(argList);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (!cchDest)
+    if (!pszDest || !pszFormat || !cchDest || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     if (vsnprintf(pszDest, cchDest, pszFormat, argList) != -1)
@@ -265,12 +271,13 @@ StringCchPrintfA(
 {
     int ret;
     va_list va;
-    char buf[1024];
+    char buf[STRUNSAFE_MAX_BUFFER];
     size_t bufsize = sizeof(buf) / sizeof(buf[0]);
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
     assert(pszDest != pszFormat);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     va_start(va, pszFormat);
@@ -303,7 +310,7 @@ StringCchGetsA(
     assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (!cchDest || cchDest > STRSAFE_MAX_CCH)
+    if (!pszDest || !cchDest || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     if (fgets(pszDest, (int)cchDest, stdin) != NULL)
@@ -410,16 +417,18 @@ StringCbVPrintfA(
     const char *pszFormat,
     va_list argList)
 {
+    size_t cchDest = cbDest / sizeof(*pszDest);
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
     assert(argList);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (!cbDest)
+    if (!pszDest || !pszFormat || !cbDest || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
-    if (vsnprintf(pszDest, cbDest / sizeof(*pszDest), pszFormat, argList) != -1)
+    if (vsnprintf(pszDest, cchDest, pszFormat, argList) != -1)
         return S_OK;
 
 #ifndef STRUNSAFE_NO_ASSERT
@@ -431,17 +440,19 @@ StringCbVPrintfA(
 STRUNSAFEAPIV
 StringCbPrintfA(
     char *pszDest,
-    size_t cchDest,
+    size_t cbDest,
     const char *pszFormat, ...)
 {
     int ret;
     va_list va;
+    size_t cchDest = cbDest / sizeof(*pszDest);
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (!cchDest)
+    if (!pszDest || !pszFormat || !cchDest || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     va_start(va, pszFormat);
@@ -511,6 +522,7 @@ StringCchCopyW(
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -548,6 +560,7 @@ StringCchCatW(
     assert(pszDest);
     assert(pszSrc);
     assert(pszDest != pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -585,6 +598,7 @@ StringCchCatNW(
     assert(pszDest);
     assert(pszSrc);
     assert(pszDest != pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -623,6 +637,7 @@ StringCchCopyNW(
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszSrc);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
@@ -657,13 +672,24 @@ StringCchVPrintfW(
     const wchar_t *pszFormat,
     va_list argList)
 {
+    int ret;
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
     assert(argList);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
-    if (vsnwprintf(pszDest, cchDest, pszFormat, argList) != -1)
+
+    if (!pszDest || !pszFormat || !cchDest || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
+
+    ret = vsnwprintf(pszDest, cchDest, pszFormat, argList);
+    if (ret != -1)
         return S_OK;
+
+#ifndef STRUNSAFE_NO_ASSERT
+    assert(0);
+#endif
     return E_FAIL;
 }
 
@@ -675,16 +701,27 @@ StringCchPrintfW(
 {
     int ret;
     va_list va;
+    wchar_t buf[STRUNSAFE_MAX_BUFFER];
+    size_t bufsize = sizeof(buf) / sizeof(buf[0]);
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
+    assert(pszDest != pszFormat);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
     va_start(va, pszFormat);
-    ret = vsnwprintf(pszDest, cchDest, pszFormat, va);
+
+    if (!pszDest || !cchDest || !pszFormat || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
+
+    ret = vsnwprintf(buf, bufsize, pszFormat, va);
     va_end(va);
-    if (ret != -1)
-        return S_OK;
+
+    if (ret >= 0)
+    {
+        return StringCchCopyNW(pszDest, cchDest, buf, bufsize);
+    }
 
 #ifndef STRUNSAFE_NO_ASSERT
     assert(0);
@@ -703,7 +740,7 @@ StringCchGetsW(
     assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (!cchDest || cchDest > STRSAFE_MAX_CCH)
+    if (!pszDest || !cchDest || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     if (fgetws(pszDest, (int)cchDest, stdin) != NULL)
@@ -726,6 +763,7 @@ StringCchGetsW(
 #ifndef STRUNSAFE_NO_ASSERT
     assert(0);
 #endif
+    return E_FAIL;
 }
 
 STRUNSAFEAPI
@@ -809,13 +847,18 @@ StringCbVPrintfW(
     const wchar_t *pszFormat,
     va_list argList)
 {
+    size_t cchDest = cbDest / sizeof(*pszDest);
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
     assert(argList);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
 
-    if (vsnwprintf(pszDest, cbDest / sizeof(*pszDest), pszFormat, argList) != -1)
+    if (!pszDest || !pszFormat || !cchDest || cchDest > STRSAFE_MAX_CCH);
+        return STRSAFE_E_INVALID_PARAMETER;
+
+    if (vsnwprintf(pszDest, cchDest, pszFormat, argList) != -1)
         return S_OK;
 
 #ifndef STRUNSAFE_NO_ASSERT
@@ -827,15 +870,19 @@ StringCbVPrintfW(
 STRUNSAFEAPIV
 StringCbPrintfW(
     wchar_t *pszDest,
-    size_t cchDest,
+    size_t cbDest,
     const wchar_t *pszFormat, ...)
 {
     int ret;
     va_list va;
+    size_t cchDest = cbDest / sizeof(*pszDest);
 #ifndef STRUNSAFE_NO_ASSERT
     assert(pszDest);
     assert(pszFormat);
+    assert(cchDest <= STRSAFE_MAX_CCH);
 #endif
+    if (!pszDest || !pszFormat || !cchDest || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
 
     va_start(va, pszFormat);
     ret = vsnwprintf(pszDest, cchDest, pszFormat, va);
