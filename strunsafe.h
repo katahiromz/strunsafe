@@ -193,24 +193,34 @@ StringCchCopyNA(
     const char *pszSrc,
     size_t cchToCopy)
 {
+    HRESULT hr = S_OK;
     size_t cchSrc;
     assert(pszDest);
     assert(pszSrc);
 
-    if (!cchDest)
+    if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     cchSrc = strlen(pszSrc);
     if (cchSrc > cchToCopy)
         cchSrc = cchToCopy;
     if (cchSrc + 1 > cchDest)
+    {
         cchSrc = cchDest - 1;
-    if (!cchSrc)
-        return S_OK;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
 
-    memcpy(&pszDest, pszSrc, cchSrc * sizeof(*pszDest));
+    if (!cchSrc)
+    {
+        if (cchDest)
+            pszDest[0] = 0;
+        return hr;
+    }
+
+    memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
@@ -552,24 +562,34 @@ StringCchCopyNW(
     const wchar_t *pszSrc,
     size_t cchToCopy)
 {
+    HRESULT hr = S_OK;
     size_t cchSrc;
     assert(pszDest);
     assert(pszSrc);
 
-    if (!cchDest)
-        return S_OK;
+    if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchSrc = wcslen(pszSrc);
     if (cchSrc > cchToCopy)
         cchSrc = cchToCopy;
     if (cchSrc + 1 > cchDest)
+    {
         cchSrc = cchDest - 1;
-    if (!cchSrc)
-        return S_OK;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
 
-    memcpy(&pszDest, pszSrc, cchSrc * sizeof(*pszDest));
+    if (!cchSrc)
+    {
+        if (cchDest)
+            pszDest[0] = 0;
+        return hr;
+    }
+
+    memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
