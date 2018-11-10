@@ -3,11 +3,18 @@
 #define SET_FIRST(buf) buf[0] = 0
 #define SET_MIDDLE(buf) buf[BUFSIZE / 2] = 0
 #define SET_LAST(buf) buf[BUFSIZE - 1] = 0
+#define INVALID_LENGTH ((size_t)STRSAFE_MAX_CCH + 1)
 
 START_TEST(StringCchCopyA)
 {
     char buf[BUFSIZE];
     HRESULT hr;
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = StringCchCopyA(buf, INVALID_LENGTH, "a");
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "FFFFFFF");
 
     FILL_BUFFER(buf);
     SET_LAST(buf);
@@ -118,6 +125,12 @@ START_TEST(StringCchCatA)
 {
     char buf[BUFSIZE];
     HRESULT hr;
+
+    FILL_BUFFER(buf);
+    SET_FIRST(buf);
+    hr = StringCchCatA(buf, INVALID_LENGTH, "a");
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "");
 
     FILL_BUFFER(buf);
     SET_FIRST(buf);
@@ -332,6 +345,18 @@ START_TEST(StringCchCatNA)
 {
     char buf[BUFSIZE];
     HRESULT hr;
+
+    FILL_BUFFER(buf);
+    SET_FIRST(buf);
+    hr = StringCchCatNA(buf, INVALID_LENGTH, "a", 1);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "");
+
+    FILL_BUFFER(buf);
+    SET_FIRST(buf);
+    hr = StringCchCatNA(buf, 1, "a", INVALID_LENGTH);
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "");
 
     FILL_BUFFER(buf);
     SET_FIRST(buf);
@@ -1381,6 +1406,18 @@ START_TEST(StringCchCopyNA)
 
     FILL_BUFFER(buf);
     SET_LAST(buf);
+    hr = StringCchCopyNA(buf, INVALID_LENGTH, "a", 0);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "FFFFFFF");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = StringCchCopyNA(buf, 0, "a", INVALID_LENGTH);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "FFFFFFF");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
     hr = StringCchCopyNA(buf, 0, "", 0);
     mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
     mtest_psz_eq(buf, "FFFFFFF");
@@ -1907,6 +1944,12 @@ START_TEST(StringCchPrintfA)
 
     FILL_BUFFER(buf);
     SET_LAST(buf);
+    hr = StringCchPrintfA(buf, INVALID_LENGTH, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "FFFFFFF");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
     hr = StringCchPrintfA(buf, 0, "%d", 1234);
     mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
     mtest_psz_eq(buf, "FFFFFFF");
@@ -1983,6 +2026,11 @@ START_TEST(StringCchLengthA)
 {
     size_t cch;
     HRESULT hr;
+
+    cch = 123;
+    hr = StringCchLengthA("a", INVALID_LENGTH, &cch);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest(cch == 0, "%d\n", (int)cch);
 
     cch = 123;
     hr = StringCchLengthA("", 0, &cch);
