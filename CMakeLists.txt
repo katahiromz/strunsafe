@@ -58,15 +58,15 @@ endif()
 ##############################################################################
 
 # check exisistence of functions
-include(CheckFunctionExists)
+include(CheckSymbolExists)
 
-check_function_exists(vsnprintf_s HAVE_VSNPRINTF_S)
-check_function_exists(_vsnprintf HAVE__VSNPRINTF)
-check_function_exists(_vsnprintf_s HAVE__VSNPRINTF_S)
+check_symbol_exists(vsnprintf_s stdio.h HAVE_VSNPRINTF_S)
+check_symbol_exists(_vsnprintf stdio.h HAVE__VSNPRINTF)
+check_symbol_exists(_vsnprintf_s stdio.h HAVE__VSNPRINTF_S)
 
-check_function_exists(vsnwprintf_s HAVE_VSNWPRINTF_S)
-check_function_exists(_vsnwprintf HAVE__VSNWPRINTF)
-check_function_exists(_vsnwprintf_s HAVE__VSNWPRINTF_S)
+check_symbol_exists(vsnwprintf_s stdio.h HAVE_VSNWPRINTF_S)
+check_symbol_exists(_vsnwprintf stdio.h HAVE__VSNWPRINTF)
+check_symbol_exists(_vsnwprintf_s stdio.h HAVE__VSNWPRINTF_S)
 
 subdirs(tests)
 
