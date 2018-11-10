@@ -57,6 +57,17 @@ endif()
 
 ##############################################################################
 
+# check exisistence of vsnprintf_s
+include(CheckFunctionExists)
+
+check_function_exists(vsnprintf_s HAVE_VSNPRINTF_S)
+check_function_exists(_vsnprintf HAVE__VSNPRINTF)
+check_function_exists(_vsnprintf_s HAVE__VSNPRINTF_S)
+
+check_function_exists(vsnwprintf_s HAVE_VSNWPRINTF_S)
+check_function_exists(_vsnwprintf HAVE__VSNWPRINTF)
+check_function_exists(_vsnwprintf_s HAVE__VSNWPRINTF_S)
+
 subdirs(tests)
 
 ##############################################################################
