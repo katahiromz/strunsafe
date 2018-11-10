@@ -57,7 +57,7 @@ endif()
 
 ##############################################################################
 
-# check exisistence of vsnprintf_s
+# check exisistence of functions
 include(CheckFunctionExists)
 
 check_function_exists(vsnprintf_s HAVE_VSNPRINTF_S)
