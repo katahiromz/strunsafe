@@ -381,10 +381,10 @@ StringCbLengthA(
     size_t cchLength;
     size_t cchMax = cbMax / sizeof(*psz);
     assert(psz);
-    assert(pcchLength);
+    assert(pcbLength);
     assert(cchMax <= STRSAFE_MAX_CCH);
 
-    if (!psz || !cchMax || !pcchLength || cchMax > STRSAFE_MAX_CCH)
+    if (!psz || !cchMax || !pcbLength || cchMax > STRSAFE_MAX_CCH)
     {
         if (pcbLength)
             *pcbLength = 0;
@@ -395,7 +395,7 @@ StringCbLengthA(
     {
         if (cchMax <= cchLength + 1)
         {
-            *pcchLength = 0;
+            *pcbLength = 0;
             return STRSAFE_E_INVALID_PARAMETER;
         }
     }
@@ -688,10 +688,10 @@ StringCbLengthW(
     size_t cchLength;
     size_t cchMax = cbMax / sizeof(*psz);
     assert(psz);
-    assert(pcchLength);
+    assert(pcbLength);
     assert(cchMax <= STRSAFE_MAX_CCH);
 
-    if (!psz || !cchMax || !pcchLength || cchMax > STRSAFE_MAX_CCH)
+    if (!psz || !cchMax || !pcbLength || cchMax > STRSAFE_MAX_CCH)
     {
         if (pcbLength)
             *pcbLength = 0;
@@ -702,7 +702,7 @@ StringCbLengthW(
     {
         if (cchMax <= cchLength + 1)
         {
-            *pcchLength = 0;
+            *pcbLength = 0;
             return STRSAFE_E_INVALID_PARAMETER;
         }
     }
