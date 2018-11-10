@@ -1906,52 +1906,74 @@ START_TEST(StringCchPrintfA)
 
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 0, "%d", 1234);
+    hr = StringCchPrintfA(buf, 0, "%d", 1234);
+    mtest(hr == STRSAFE_E_INVALID_PARAMETER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "FFFFFFF");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 1, "%d", 1234);
+    hr = StringCchPrintfA(buf, 1, "%d", 1234);
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 2, "%d", 1234);
+    hr = StringCchPrintfA(buf, 2, "%d", 1234);
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "1");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 3, "%d", 1234);
+    hr = StringCchPrintfA(buf, 3, "%d", 1234);
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "12");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 4, "%d", 1234);
+    hr = StringCchPrintfA(buf, 4, "%d", 1234);
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "123");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 5, "%d", 1234);
+    hr = StringCchPrintfA(buf, 5, "%d", 1234);
+    mtest(hr == S_OK, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "1234");
 
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 0, "%s", "1234");
+    hr = StringCchPrintfA(buf, 0, "%s", "1234");
+    mtest(hr == STRSAFE_E_INVALID_PARAMETER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "FFFFFFF");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 1, "%s", "1234");
+    hr = StringCchPrintfA(buf, 1, "%s", "1234");
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 2, "%s", "1234");
+    hr = StringCchPrintfA(buf, 2, "%s", "1234");
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "1");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 3, "%s", "1234");
+    hr = StringCchPrintfA(buf, 3, "%s", "1234");
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "12");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 4, "%s", "1234");
+    hr = StringCchPrintfA(buf, 4, "%s", "1234");
+    mtest(hr == STRSAFE_E_INSUFFICIENT_BUFFER, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "123");
+
     FILL_BUFFER(buf);
     SET_LAST(buf);
-    StringCchPrintfA(buf, 5, "%s", "1234");
+    hr = StringCchPrintfA(buf, 5, "%s", "1234");
+    mtest(hr == S_OK, "hr:0x%08lX\n", hr);
     mtest_psz_eq(buf, "1234");
 }
 
