@@ -4,7 +4,7 @@
 /* NO WARRANTY ABSOLUTELY. */
 
 #ifndef _STRUNSAFE_H_INCLUDED_
-#define _STRUNSAFE_H_INCLUDED_      3   /* Version 3 */
+#define _STRUNSAFE_H_INCLUDED_      4   /* Version 4 */
 
 #ifdef _STRSAFE_H_INCLUDED_
     #error Please #include "strunsafe.h" before #include <strsafe.h>.
@@ -78,13 +78,15 @@ C_ASSERT(STRSAFE_MAX_CCH > 1);
 
 typedef char *STRSAFE_LPSTR;
 typedef const char *STRSAFE_LPCSTR;
-typedef wchar_t *STRSAFE_LPWSTR;
-typedef const wchar_t *STRSAFE_LPCWSTR;
-typedef const wchar_t UNALIGNED *STRSAFE_LPCUWSTR;
-
 typedef const char *STRSAFE_PCNZCH;
-typedef const wchar_t *STRSAFE_PCNZWCH;
-typedef const wchar_t UNALIGNED *STRSAFE_PCUNZWCH;
+
+#ifdef _WIN32
+    typedef wchar_t *STRSAFE_LPWSTR;
+    typedef const wchar_t *STRSAFE_LPCWSTR;
+    typedef const wchar_t UNALIGNED *STRSAFE_LPCUWSTR;
+    typedef const wchar_t *STRSAFE_PCNZWCH;
+    typedef const wchar_t UNALIGNED *STRSAFE_PCUNZWCH;
+#endif
 
 STRUNSAFEAPI
 StringCchCopyA(
