@@ -68,6 +68,13 @@ if (WIN32)
     add_test(NAME SafeStringCchCopyNA COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyNA)
     add_test(NAME SafeStringCchLengthA COMMAND $<TARGET_FILE:strsafe_test> StringCchLengthA)
     add_test(NAME SafeStringCchPrintfA COMMAND $<TARGET_FILE:strsafe_test> StringCchPrintfA)
+
+    add_test(NAME SafeStringCchCatW COMMAND $<TARGET_FILE:strsafe_test> StringCchCatW)
+    add_test(NAME SafeStringCchCatNW COMMAND $<TARGET_FILE:strsafe_test> StringCchCatNW)
+    add_test(NAME SafeStringCchCopyW COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyW)
+    add_test(NAME SafeStringCchCopyNW COMMAND $<TARGET_FILE:strsafe_test> StringCchCopyNW)
+    add_test(NAME SafeStringCchLengthW COMMAND $<TARGET_FILE:strsafe_test> StringCchLengthW)
+    add_test(NAME SafeStringCchPrintfW COMMAND $<TARGET_FILE:strsafe_test> StringCchPrintfW)
 endif(WIN32)
 
 add_executable(strunsafe_test strunsafe_test.c)
@@ -77,5 +84,14 @@ add_test(NAME UnsafeStringCchCopyA COMMAND $<TARGET_FILE:strunsafe_test> StringC
 add_test(NAME UnsafeStringCchCopyNA COMMAND $<TARGET_FILE:strunsafe_test> StringCchCopyNA)
 add_test(NAME UnsafeStringCchLengthA COMMAND $<TARGET_FILE:strunsafe_test> StringCchLengthA)
 add_test(NAME UnsafeStringCchPrintfA COMMAND $<TARGET_FILE:strunsafe_test> StringCchPrintfA)
+
+if (WIN32)
+    add_test(NAME UnsafeStringCchCatW COMMAND $<TARGET_FILE:strunsafe_test> StringCchCatW)
+    add_test(NAME UnsafeStringCchCatNW COMMAND $<TARGET_FILE:strunsafe_test> StringCchCatNW)
+    add_test(NAME UnsafeStringCchCopyW COMMAND $<TARGET_FILE:strunsafe_test> StringCchCopyW)
+    add_test(NAME UnsafeStringCchCopyNW COMMAND $<TARGET_FILE:strunsafe_test> StringCchCopyNW)
+    add_test(NAME UnsafeStringCchLengthW COMMAND $<TARGET_FILE:strunsafe_test> StringCchLengthW)
+    add_test(NAME UnsafeStringCchPrintfW COMMAND $<TARGET_FILE:strunsafe_test> StringCchPrintfW)
+endif(WIN32)
 
 ##############################################################################
