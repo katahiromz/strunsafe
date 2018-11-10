@@ -2021,6 +2021,105 @@ START_TEST(StringCchPrintfA)
     mtest_psz_eq(buf, "1234");
 }
 
+static HRESULT
+vprintf_test_helperA(
+    char *pszDest,
+    size_t cchDest,
+    const char *pszFormat,
+    ...)
+{
+    va_list va;
+    HRESULT hr;
+    va_start(va, pszFormat);
+    hr = StringCchVPrintfA(pszDest, cchDest, pszFormat, va);
+    va_end(va);
+    return hr;
+}
+
+START_TEST(StringCchVPrintfA)
+{
+    char buf[BUFSIZE];
+    HRESULT hr;
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, INVALID_LENGTH, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    //mtest_psz_eq(buf, "FFFFFFF"); // can be ''
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 0, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "FFFFFFF");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 1, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 2, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "1");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 3, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "12");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 4, "%d", 1234);
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "123");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 5, "%d", 1234);
+    mtest_long_eq(hr, S_OK);
+    mtest_psz_eq(buf, "1234");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 0, "%s", "1234");
+    mtest_long_eq(hr, STRSAFE_E_INVALID_PARAMETER);
+    mtest_psz_eq(buf, "FFFFFFF");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 1, "%s", "1234");
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 2, "%s", "1234");
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "1");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 3, "%s", "1234");
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "12");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 4, "%s", "1234");
+    mtest_long_eq(hr, STRSAFE_E_INSUFFICIENT_BUFFER);
+    mtest_psz_eq(buf, "123");
+
+    FILL_BUFFER(buf);
+    SET_LAST(buf);
+    hr = vprintf_test_helperA(buf, 5, "%s", "1234");
+    mtest_long_eq(hr, S_OK);
+    mtest_psz_eq(buf, "1234");
+}
+
 
 START_TEST(StringCchLengthA)
 {
@@ -2125,4 +2224,5 @@ BEGIN_TESTS()
     DEFINE_TEST(StringCchCopyNA)
     DEFINE_TEST(StringCchLengthA)
     DEFINE_TEST(StringCchPrintfA)
+    DEFINE_TEST(StringCchVPrintfA)
 END_TESTS()
