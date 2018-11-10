@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_MTESTER_H_
-#define MZC4_MTESTER_H_     10   /* Version 10 */
+#define MZC4_MTESTER_H_     11   /* Version 11 */
 
 /****************************************************************************/
 
@@ -314,6 +314,25 @@ static MZC_INLINE char *MTester_sprintf(const char *fmt, ...)
     #define mtest_str_ne(expr, value) \
         MTester_do_test(__FILE__, __LINE__, std::string(expr) != std::string(value), \
                         "%s expected not '%s'.\n", #expr, std::string(value).c_str())
+#endif
+
+#ifdef _WIN32   // Unicode support for Win32
+    #define mtest_pwsz_eq(expr, value) \
+        MTester_do_test(__FILE__, __LINE__, wcscmp((expr), (value)) == 0, \
+                        "%s expected '%ls', got '%ls'.\n", #expr, (value), (expr))
+    #define mtest_pwsz_ne(expr, value) \
+        MTester_do_test(__FILE__, __LINE__, wcscmp((expr), (value)) != 0, \
+                        "%s expected not '%ls'.\n", #expr, (value))
+
+    #ifdef __cplusplus
+        #define mtest_wstr_eq(expr, value) \
+            MTester_do_test(__FILE__, __LINE__, std::wstring(expr) == std::wstring(value), \
+                            "%s expected '%ls', got '%ls'.\n", #expr, \
+                            std::wstring(value).c_str(), std::wstring(expr).c_str())
+        #define mtest_wstr_ne(expr, value) \
+            MTester_do_test(__FILE__, __LINE__, std::wstring(expr) != std::wstring(value), \
+                            "%s expected not '%ls'.\n", #expr, std::wstring(value).c_str())
+    #endif
 #endif
 
 /****************************************************************************/
