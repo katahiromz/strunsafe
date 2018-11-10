@@ -87,22 +87,32 @@ StringCchCopyA(
     size_t cchDest,
     const char *pszSrc)
 {
+    HRESULT hr = S_OK;
     size_t cchSrc;
     assert(pszDest);
     assert(pszSrc);
 
-    if (!cchDest)
+    if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     cchSrc = strlen(pszSrc);
     if (cchSrc + 1 > cchDest)
+    {
         cchSrc = cchDest - 1;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
+
     if (!cchSrc)
-        return S_OK;
+    {
+        if (cchDest)
+            pszDest[0] = 0;
+        return hr;
+    }
 
     memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
@@ -213,20 +223,26 @@ StringCchPrintfA(
 {
     int ret;
     va_list va;
+    char buf[1024];
+    size_t bufsize = sizeof(buf) / sizeof(buf[0]);
     assert(pszDest);
     assert(pszFormat);
+    assert(pszDest != pszFormat);
 
     va_start(va, pszFormat);
 
-    if (!cchDest)
+    if (!pszDest || !cchDest || !pszFormat || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
-    ret = vsnprintf(pszDest, cchDest, pszFormat, va);
+    ret = vsnprintf(buf, bufsize, pszFormat, va);
     va_end(va);
-    if (ret != -1)
-        return S_OK;
 
-    assert(0);
+    if (ret >= 0)
+    {
+        return StringCchCopyNA(pszDest, cchDest, buf, bufsize);
+    }
+
+    //assert(0);
     return E_FAIL;
 }
 
@@ -412,22 +428,32 @@ StringCchCopyW(
     size_t cchDest,
     const wchar_t *pszSrc)
 {
+    HRESULT hr = S_OK;
     size_t cchSrc;
     assert(pszDest);
     assert(pszSrc);
 
-    if (!cchDest)
-        return S_OK;
+    if (!pszDest || !cchDest || !pszSrc || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchSrc = wcslen(pszSrc);
     if (cchSrc + 1 > cchDest)
+    {
         cchSrc = cchDest - 1;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
+
     if (!cchSrc)
-        return S_OK;
+    {
+        if (cchDest)
+            pszDest[0] = 0;
+        return hr;
+    }
 
     memcpy(pszDest, pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
