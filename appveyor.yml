@@ -32,3 +32,7 @@ build:
 
 matrix:
   fast_finish: true
+
+test_script:
+  - set CTEST_OUTPUT_ON_FAILURE=1
+  - cmd: ctest -j 2
