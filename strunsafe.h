@@ -121,23 +121,32 @@ StringCchCatA(
     size_t cchDest,
     const char *pszSrc)
 {
+    HRESULT hr = S_OK;
     size_t cchOld, cchSrc;
     assert(pszDest);
     assert(pszSrc);
+    assert(pszDest != pszSrc);
 
-    if (!cchDest || !*pszSrc)
+    if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = strlen(pszDest);
     cchSrc = strlen(pszSrc);
-    if (cchOld + cchSrc + 1 > cchDest)
-        cchSrc = cchDest - cchOld - 1;
+    if (cchOld >= cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
     if (!cchSrc)
         return S_OK;
 
-    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
+    if (cchOld + cchSrc + 1 > cchDest)
+    {
+        cchSrc = cchDest - cchOld - 1;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
+
+    memcpy(&pszDest[cchOld], pszSrc, cchSrc);
     pszDest[cchOld + cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
@@ -462,25 +471,32 @@ StringCchCatW(
     size_t cchDest,
     const wchar_t *pszSrc)
 {
+    HRESULT hr = S_OK;
     size_t cchOld, cchSrc;
     assert(pszDest);
     assert(pszSrc);
+    assert(pszDest != pszSrc);
 
-    if (!cchDest || !*pszSrc)
-        return S_OK;
+    if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = wcslen(pszDest);
     cchSrc = wcslen(pszSrc);
-    if (cchOld + cchSrc + 1 > cchDest)
-        cchSrc = cchDest - cchOld - 1;
+    if (cchOld >= cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
     if (!cchSrc)
         return S_OK;
 
-    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
+    if (cchOld + cchSrc + 1 > cchDest)
+    {
+        cchSrc = cchDest - cchOld - 1;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
+
+    memcpy(&pszDest[cchOld], pszSrc, cchSrc);
     pszDest[cchOld + cchSrc] = 0;
 
-    assert(0);
-    return E_FAIL;
+    return hr;
 }
 
 STRUNSAFEAPI

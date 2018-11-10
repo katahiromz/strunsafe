@@ -1,11 +1,12 @@
+#define BUFSIZE 8
 #define FILL_BUFFER(buf) memset(buf, 'F', sizeof(buf))
 #define SET_FIRST(buf) buf[0] = 0
-#define SET_MIDDLE(buf) buf[sizeof(buf) / sizeof(buf[0]) / 2] = 0
-#define SET_LAST(buf) buf[sizeof(buf) / sizeof(buf[0]) - 1] = 0
+#define SET_MIDDLE(buf) buf[BUFSIZE / 2] = 0
+#define SET_LAST(buf) buf[BUFSIZE - 1] = 0
 
 START_TEST(StringCchCopyA)
 {
-    char buf[8];
+    char buf[BUFSIZE];
     HRESULT hr;
 
     FILL_BUFFER(buf);
@@ -115,7 +116,7 @@ START_TEST(StringCchCopyA)
 
 START_TEST(StringCchCatA)
 {
-    char buf[8];
+    char buf[BUFSIZE];
     HRESULT hr;
 
     FILL_BUFFER(buf);
@@ -329,7 +330,7 @@ START_TEST(StringCchCatA)
 
 START_TEST(StringCchCatNA)
 {
-    char buf[8];
+    char buf[BUFSIZE];
     HRESULT hr;
 
     FILL_BUFFER(buf);
@@ -1375,7 +1376,7 @@ START_TEST(StringCchCatNA)
 
 START_TEST(StringCchCopyNA)
 {
-    char buf[8];
+    char buf[BUFSIZE];
     HRESULT hr;
 
     FILL_BUFFER(buf);
@@ -1901,7 +1902,7 @@ START_TEST(StringCchCopyNA)
 
 START_TEST(StringCchPrintfA)
 {
-    char buf[8];
+    char buf[BUFSIZE];
     HRESULT hr;
 
     FILL_BUFFER(buf);
