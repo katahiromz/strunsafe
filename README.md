@@ -1,4 +1,5 @@
 [![Build Status on Travis CI](https://travis-ci.org/katahiromz/strunsafe.svg?branch=master)](https://travis-ci.org/katahiromz/strunsafe)
+[![Build status on AppVeyor](https://ci.appveyor.com/api/projects/status/sny6gfdyoe28tcvu?svg=true)](https://ci.appveyor.com/project/katahiromz/strunsafe)
 
 # <strunsafe.h> by katahiromz
 
