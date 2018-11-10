@@ -92,7 +92,7 @@ StringCchCopyA(
     assert(pszSrc);
 
     if (!cchDest)
-        return S_OK;
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchSrc = strlen(pszSrc);
     if (cchSrc + 1 > cchDest)
@@ -116,7 +116,7 @@ StringCchCatA(
     assert(pszSrc);
 
     if (!cchDest || !*pszSrc)
-        return S_OK;
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = strlen(pszDest);
     cchSrc = strlen(pszSrc);
@@ -142,7 +142,7 @@ StringCchCatNA(
     assert(pszSrc);
 
     if (!cchDest || !*pszSrc)
-        return S_OK;
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = strlen(pszDest);
     cchSrc = strlen(pszSrc);
@@ -170,7 +170,7 @@ StringCchCopyNA(
     assert(pszSrc);
 
     if (!cchDest)
-        return S_OK;
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchSrc = strlen(pszSrc);
     if (cchSrc > cchToCopy)
@@ -195,8 +195,13 @@ StringCchVPrintfA(
     assert(pszDest);
     assert(pszFormat);
     assert(argList);
+
+    if (!cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
+
     if (vsnprintf(pszDest, cchDest, pszFormat, argList) != -1)
         return S_OK;
+
     return E_FAIL;
 }
 
@@ -212,6 +217,10 @@ StringCchPrintfA(
     assert(pszFormat);
 
     va_start(va, pszFormat);
+
+    if (!cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
+
     ret = vsnprintf(pszDest, cchDest, pszFormat, va);
     va_end(va);
     if (ret != -1)
@@ -227,8 +236,13 @@ StringCchGetsA(
     size_t cchDest)
 {
     assert(pszDest);
+
+    if (!cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
+
     if (fgets(pszDest, (int)cchDest, stdin) != NULL)
         return S_OK;
+
     assert(0);
     return E_FAIL;
 }
@@ -239,13 +253,28 @@ StringCchLengthA(
     size_t cchMax,
     size_t *pcchLength)
 {
+    size_t cchLength;
     assert(psz);
     assert(pcchLength);
+    assert(cchMax <= STRSAFE_MAX_CCH);
 
-    if (pcchLength == NULL)
-        return E_FAIL;
+    if (!psz || !cchMax || !pcchLength || cchMax > STRSAFE_MAX_CCH)
+    {
+        if (pcchLength)
+            *pcchLength = 0;
+        return STRSAFE_E_INVALID_PARAMETER;
+    }
 
-    *pcchLength = strlen(psz);
+    for (cchLength = 0; *psz; ++psz, ++cchLength)
+    {
+        if (cchMax <= cchLength + 1)
+        {
+            *pcchLength = 0;
+            return STRSAFE_E_INVALID_PARAMETER;
+        }
+    }
+
+    *pcchLength = cchLength;
 
     return S_OK;
 }
@@ -301,6 +330,9 @@ StringCbVPrintfA(
     assert(pszFormat);
     assert(argList);
 
+    if (!cbDest)
+        return STRSAFE_E_INVALID_PARAMETER;
+
     if (vsnprintf(pszDest, cbDest / sizeof(*pszDest), pszFormat, argList) != -1)
         return S_OK;
 
@@ -318,6 +350,9 @@ StringCbPrintfA(
     va_list va;
     assert(pszDest);
     assert(pszFormat);
+
+    if (!cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
 
     va_start(va, pszFormat);
     ret = vsnprintf(pszDest, cchDest, pszFormat, va);
@@ -343,13 +378,29 @@ StringCbLengthA(
     size_t cbMax,
     size_t *pcbLength)
 {
+    size_t cchLength;
+    size_t cchMax = cbMax / sizeof(*psz);
     assert(psz);
-    assert(pcbLength);
+    assert(pcchLength);
+    assert(cchMax <= STRSAFE_MAX_CCH);
 
-    if (pcbLength == NULL)
-        return E_FAIL;
+    if (!psz || !cchMax || !pcchLength || cchMax > STRSAFE_MAX_CCH)
+    {
+        if (pcbLength)
+            *pcbLength = 0;
+        return STRSAFE_E_INVALID_PARAMETER;
+    }
 
-    *pcbLength = strlen(psz) * sizeof(*psz);
+    for (cchLength = 0; *psz; ++psz, ++cchLength)
+    {
+        if (cchMax <= cchLength + 1)
+        {
+            *pcchLength = 0;
+            return STRSAFE_E_INVALID_PARAMETER;
+        }
+    }
+
+    *pcbLength = cchLength * sizeof(*psz);
 
     return S_OK;
 }
@@ -515,13 +566,28 @@ StringCchLengthW(
     size_t cchMax,
     size_t *pcchLength)
 {
+    size_t cchLength;
     assert(psz);
     assert(pcchLength);
+    assert(cchMax <= STRSAFE_MAX_CCH);
 
-    if (pcchLength == NULL)
-        return E_FAIL;
+    if (!psz || !cchMax || !pcchLength || cchMax > STRSAFE_MAX_CCH)
+    {
+        if (pcchLength)
+            *pcchLength = 0;
+        return STRSAFE_E_INVALID_PARAMETER;
+    }
 
-    *pcchLength = wcslen(psz);
+    for (cchLength = 0; *psz; ++psz, ++cchLength)
+    {
+        if (cchMax <= cchLength + 1)
+        {
+            *pcchLength = 0;
+            return STRSAFE_E_INVALID_PARAMETER;
+        }
+    }
+
+    *pcchLength = cchLength;
 
     return S_OK;
 }
@@ -619,52 +685,68 @@ StringCbLengthW(
     size_t cbMax,
     size_t *pcbLength)
 {
+    size_t cchLength;
+    size_t cchMax = cbMax / sizeof(*psz);
     assert(psz);
-    assert(pcbLength);
+    assert(pcchLength);
+    assert(cchMax <= STRSAFE_MAX_CCH);
 
-    if (pcbLength == NULL)
-        return E_FAIL;
+    if (!psz || !cchMax || !pcchLength || cchMax > STRSAFE_MAX_CCH)
+    {
+        if (pcbLength)
+            *pcbLength = 0;
+        return STRSAFE_E_INVALID_PARAMETER;
+    }
 
-    *pcbLength = wcslen(psz) * sizeof(*psz);
+    for (cchLength = 0; *psz; ++psz, ++cchLength)
+    {
+        if (cchMax <= cchLength + 1)
+        {
+            *pcchLength = 0;
+            return STRSAFE_E_INVALID_PARAMETER;
+        }
+    }
+
+    *pcbLength = cchLength * sizeof(*psz);
 
     return S_OK;
 }
 #endif  /* def _WIN32 */
 
 #ifdef UNICODE
-    #define StringCchCat StringCchCatW
-    #define StringCchCopy StringCchCopyW
-    #define StringCchCopyN StringCchCopyNW
-    #define StringCchCatN StringCchCatNW
-    #define StringCchVPrintf StringCchVPrintfW
-    #define StringCchPrintf StringCchPrintfW
-    #define StringCchGets StringCchGetsW
-    #define StringCchLength StringCchLengthW
     #define StringCbCat StringCbCatW
+    #define StringCbCatN StringCbCatNW
     #define StringCbCopy StringCbCopyW
     #define StringCbCopyN StringCbCopyNW
-    #define StringCbCatN StringCbCatNW
-    #define StringCbVPrintf StringCbVPrintfW
-    #define StringCbPrintf StringCbPrintfW
     #define StringCbGets StringCbGetsW
     #define StringCbLength StringCbLengthW
+    #define StringCbPrintf StringCbPrintfW
+    #define StringCbVPrintf StringCbVPrintfW
+    #define StringCchCat StringCchCatW
+    #define StringCchCatN StringCchCatNW
+    #define StringCchCopy StringCchCopyW
+    #define StringCchCopyN StringCchCopyNW
+    #define StringCchGets StringCchGetsW
+    #define StringCchLength StringCchLengthW
+    #define StringCchPrintf StringCchPrintfW
+    #define StringCchVPrintf StringCchVPrintfW
 #else
-    #define StringCchCat StringCchCatA
-    #define StringCchCopy StringCchCopyA
-    #define StringCchCopyN StringCchCopyNA
-    #define StringCchCatN StringCchCatNA
-    #define StringCchVPrintf StringCchVPrintfA
-    #define StringCchPrintf StringCchPrintfA
-    #define StringCchGets StringCchGetsA
-    #define StringCchLength StringCchLengthA
     #define StringCbCat StringCbCatA
+    #define StringCbCatN StringCbCatNA
     #define StringCbCopy StringCbCopyA
     #define StringCbCopyN StringCbCopyNA
-    #define StringCbCatN StringCbCatNA
-    #define StringCbVPrintf StringCbVPrintfA
-    #define StringCbPrintf StringCbPrintfA
     #define StringCbGets StringCbGetsA
     #define StringCbLength StringCbLengthA
+    #define StringCbPrintf StringCbPrintfA
+    #define StringCbVPrintf StringCbVPrintfA
+    #define StringCchCat StringCchCatA
+    #define StringCchCatN StringCchCatNA
+    #define StringCchCopy StringCchCopyA
+    #define StringCchCopyN StringCchCopyNA
+    #define StringCchGets StringCchGetsA
+    #define StringCchLength StringCchLengthA
+    #define StringCchPrintf StringCchPrintfA
+    #define StringCchVPrintf StringCchVPrintfA
 #endif
 
 #endif  /* ndef _STRUNSAFE_H_INCLUDED_ */
