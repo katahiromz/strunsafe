@@ -3,7 +3,7 @@
 
 # <strunsafe.h> by katahiromz
 
-This is unsafe version of <strsafe.h>.
+This is portable version of <strsafe.h>. NO WARRANTY ABSOLUTELY.
 
 ## License Agreement
 
