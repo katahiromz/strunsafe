@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_MTESTER_H_
-#define MZC4_MTESTER_H_     11   /* Version 11 */
+#define MZC4_MTESTER_H_     12   /* Version 12 */
 
 /****************************************************************************/
 
@@ -11,6 +11,7 @@
     #include <cstdio>
     #include <cstring>
     #include <cstdarg>
+    #include <string>   // for std::string and std::wstring
 #else
     #include <stdio.h>
     #include <string.h>
