@@ -143,7 +143,7 @@ StringCchCatA(
         hr = STRSAFE_E_INSUFFICIENT_BUFFER;
     }
 
-    memcpy(&pszDest[cchOld], pszSrc, cchSrc);
+    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchOld + cchSrc] = 0;
 
     return hr;
@@ -156,25 +156,34 @@ StringCchCatNA(
     const char *pszSrc,
     size_t cchToAppend)
 {
+    HRESULT hr = S_OK;
     size_t cchOld, cchSrc;
     assert(pszDest);
     assert(pszSrc);
+    assert(pszDest != pszSrc);
 
-    if (!cchDest || !*pszSrc)
+    if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
         return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = strlen(pszDest);
     cchSrc = strlen(pszSrc);
+    if (cchOld >= cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
     if (cchSrc > cchToAppend)
         cchSrc = cchToAppend;
-    if (cchOld + cchSrc + 1 > cchDest)
-        cchSrc = cchDest - cchOld - 1;
     if (!cchSrc)
         return S_OK;
 
+    if (cchOld + cchSrc + 1 > cchDest)
+    {
+        cchSrc = cchDest - cchOld - 1;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
+
     memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchOld + cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
@@ -493,7 +502,7 @@ StringCchCatW(
         hr = STRSAFE_E_INSUFFICIENT_BUFFER;
     }
 
-    memcpy(&pszDest[cchOld], pszSrc, cchSrc);
+    memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchOld + cchSrc] = 0;
 
     return hr;
@@ -506,25 +515,34 @@ StringCchCatNW(
     const wchar_t *pszSrc,
     size_t cchToAppend)
 {
+    HRESULT hr = S_OK;
     size_t cchOld, cchSrc;
     assert(pszDest);
     assert(pszSrc);
+    assert(pszDest != pszSrc);
 
-    if (!cchDest || !*pszSrc)
-        return S_OK;
+    if (!cchDest || !pszSrc || pszDest == pszSrc || cchDest > STRSAFE_MAX_CCH)
+        return STRSAFE_E_INVALID_PARAMETER;
 
     cchOld = wcslen(pszDest);
     cchSrc = wcslen(pszSrc);
+    if (cchOld >= cchDest)
+        return STRSAFE_E_INVALID_PARAMETER;
     if (cchSrc > cchToAppend)
         cchSrc = cchToAppend;
-    if (cchOld + cchSrc + 1 > cchDest)
-        cchSrc = cchDest - cchOld - 1;
     if (!cchSrc)
         return S_OK;
 
+    if (cchOld + cchSrc + 1 > cchDest)
+    {
+        cchSrc = cchDest - cchOld - 1;
+        hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+    }
+
     memcpy(&pszDest[cchOld], pszSrc, cchSrc * sizeof(*pszDest));
     pszDest[cchOld + cchSrc] = 0;
-    return S_OK;
+
+    return hr;
 }
 
 STRUNSAFEAPI
